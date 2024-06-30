@@ -285,13 +285,13 @@ def execute_goals(goals):
     global automode
     for i, goal in enumerate(goals, 1):
         print_colored(f"\nExecuting Goal {i}: {goal}", TOOL_COLOR)
-        response, _ = chat_with_claude(f"Continue working on goal: {goal}")
+        response, _ = chat_with_chatgpt(f"Continue working on goal: {goal}")
         if CONTINUATION_EXIT_PHRASE in response:
             automode = False
             print_colored("Exiting automode.", TOOL_COLOR)
             break
 
-def chat_with_claude(user_input, image_path=None, current_iteration=None, max_iterations=None):
+def chat_with_chatgpt(user_input, image_path=None, current_iteration=None, max_iterations=None):
     global conversation_history, automode
     
     messages = [{"role": "system", "content": update_system_prompt(current_iteration, max_iterations)}]
@@ -401,7 +401,7 @@ def process_and_display_response(response):
         else:
             print_colored(response, CLAUDE_COLOR)
 
-def chat_with_claude(user_input, image_path=None, current_iteration=None, max_iterations=None):
+def chat_with_chatgpt(user_input, image_path=None, current_iteration=None, max_iterations=None):
     global conversation_history, automode
     
     messages = [{"role": "system", "content": update_system_prompt(current_iteration, max_iterations)}]
@@ -508,7 +508,7 @@ def main():
             
             if os.path.isfile(image_path):
                 user_input = input(f"{USER_COLOR}You (prompt for image): {Style.RESET_ALL}")
-                response, _ = chat_with_claude(user_input, image_path)
+                response, _ = chat_with_chatgpt(user_input, image_path)
                 process_and_display_response(response)
             else:
                 print_colored("Invalid image path. Please try again.", CLAUDE_COLOR)
@@ -528,7 +528,7 @@ def main():
                 
                 iteration_count = 0
                 while automode and iteration_count < max_iterations:
-                    response, exit_continuation = chat_with_claude(user_input, current_iteration=iteration_count+1, max_iterations=max_iterations)
+                    response, exit_continuation = chat_with_chatgpt(user_input, current_iteration=iteration_count+1, max_iterations=max_iterations)
                     process_and_display_response(response)
                     
                     if exit_continuation or CONTINUATION_EXIT_PHRASE in response:
@@ -550,7 +550,7 @@ def main():
             
             print_colored("Exited automode. Returning to regular chat.", TOOL_COLOR)
         else:
-            response, _ = chat_with_claude(user_input)
+            response, _ = chat_with_chatgpt(user_input)
             process_and_display_response(response)
 
 if __name__ == "__main__":
